@@ -1,0 +1,73 @@
+@COPYRIGHT 2023 Bubatu Claudiu-Mihai, 333CA
+-------------------------------------------------------------------------------
+
+                            Marketplace
+
+    The flow of this homework consists of 3 main files: marketplace.py,
+producer.py and consumer.py. The main functions are implemented in marketplace.
+The producer and the consumer classes are threads that are using the methods
+from marketplace.
+
+    Marketplace:
+    Firstly, I used google to find out how to use the logger. After navigating
+on several sites (e.g StackOverflow), I tried to implement my logger.
+    In the beginning of this class I declared all the variables that I needed
+to resolve the requests of this homework. I tried to use suggestive names in
+order to be clear the purpose of each element.
+    For the synchronization of the producer and consumer threads I used
+semaphores that were initialized with the value of 1. This means that
+only one producer / consumer (depending on the case we have) can enter
+the critical zone. This way, I avoid any race condition. I will explain now
+the implementation of the methods inside the marketplace class:
+    
+    - register_producer: I track always the current producer id (that I
+want to return) and the next producer id (that represents the next assignable
+id for our future producer); 
+    
+    - publish: A producer will publish his product to the marketplace.
+Here, I had to check if the producer has more products in his list than
+the limit that is allowed in marketplace. If he doesn`t have more products
+that this limit, it means that we can publish his product, otherwise no.
+    
+    - new_cart: I had a simillar implementation to the register_producer
+function
+
+    - add_to_cart: In order to implement this function, I had to go through
+every producer from the dictionary. Then I take the list of products of every
+producer and check if they already have the product given as parameter of
+this method in their list. If I find such an element, then I will add
+that product to the list of carts and will remove the same product from the
+list of products that the respective producer has.
+
+    - remove_from_cart: This method is the reverse of add_to_cart function.
+One mention is that here I used a reverse dictionary (almost) to get the
+owner of a product. The representative of this dictionary`s key is the
+product (instead of the producer as it was at add_to_cart) and the
+representative of this dictionary`s value is the producer (instead of
+the list of products).
+
+    - place_order: I return the cart`s products and remove the cart id
+from the carts list.
+
+    Furthermore, I built TestMarketplace class in this file which consists of
+a setup method and 7 tests which validate the functions that I built earlier.
+
+    Producer:
+    Each producer is a thread that has an assigned id with the help of the
+register_producer function from marketplace.
+    In order to build the run method, I followed the input from the tests
+and I used the methods implemented in the Marketplace. I respected the
+request of the homework: in case that the publish operation fails, I have
+to sleep the requested time of waiting.
+
+    Consumer:
+    Each consumer is a thread. In order to build the run method, I followed
+the input from the tests and I used the methods implemented in Marketplace,
+as well. For every cart, I took a separate variable to have better visibility
+over the code. I checked what is the type of operation that I need to do and
+realised it quantity times.
+    In the end, I place the order for the respective cart id and print the
+order. The flush command was neccesairly because there were remaining a few
+bytes that were affecting the fairness of the tests.
+
+
